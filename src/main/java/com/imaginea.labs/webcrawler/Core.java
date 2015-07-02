@@ -1,4 +1,4 @@
-package com.imaginea,labs.webcrawler;
+package com.imaginea.labs.webcrawler;
 
 public class Core {
     public static String getHello() {

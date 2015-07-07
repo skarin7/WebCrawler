@@ -1,4 +1,4 @@
-package com.imaginea.labs.webcrawler.com.imaginea.labs.threads;
+package com.imaginealabs.webcrawler.threads;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;

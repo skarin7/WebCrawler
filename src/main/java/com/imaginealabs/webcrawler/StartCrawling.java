@@ -1,20 +1,19 @@
-package com.imaginea.labs.webcrawler;
+package com.imaginealabs.webcrawler;
 
-import com.imaginea.labs.webcrawler.com.imaginea.labs.threads.CrawlerThread;
+import com.imaginealabs.webcrawler.threads.CrawlerThread;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.helper.HttpConnection;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FilePermission;
-import java.security.AccessController;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class StartCrawling {
@@ -59,18 +58,26 @@ public class StartCrawling {
 public  static void main(String[] args)
 
 {
-    final   String baseFolder="/home/shankark/Crawler/Test/";
-    final  String BASE_URI="http://mail-archives.apache.org/mod_mbox/maven-users/";
     final Connection conn;
     try
     {
-         conn=Jsoup.connect("http://mail-archives.apache.org/mod_mbox/maven-users/").timeout(10 * 1000);
+        Resource resource = new ClassPathResource("/webcrawler.properties");
+        Properties props = PropertiesLoaderUtils.loadProperties(resource);
+        final   String baseFolder=props.getProperty("base.download.location");
+        final   String BASE_URI=props.getProperty("remote.uri");
+        final   Integer timeOut=Integer.parseInt(props.getProperty("remote.connection.timeout"));
+
+        Instant startTime=Instant.now();
+         conn=Jsoup.connect("http://mail-archives.apache.org/mod_mbox/maven-users/").timeout(timeOut);
        List<Element> elements= conn.get().select("a[href]");
       //  String data= Jsoup.connect("http://mail-archives.apache.org/mod_mbox/maven-users/").timeout(10 * 1000).get().data();
         elements.stream().filter(n -> n.attributes().get("href").endsWith("thread")).collect(Collectors.toList()).stream().
                 forEach(n -> new Thread(new CrawlerThread(BASE_URI, baseFolder, n.attributes().get("href"),conn)).start());
   /*      StartCrawling sc =new StartCrawling();
         sc.saveContent();*/
+        Instant endTime=Instant.now();
+        Long totalTimeTook= Duration.between(startTime,endTime).getSeconds();
+        System.out.println("Crawler took " + totalTimeTook + " Second(s)");
     }
 
     catch(Exception e)

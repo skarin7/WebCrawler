@@ -1,6 +1,5 @@
 package com.imaginea.test.webcrawler;
 
-import com.imaginea.labs.webcrawler.StartCrawling;
 import junit.framework.TestCase;
 import org.junit.Ignore;
 

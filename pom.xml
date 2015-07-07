@@ -86,32 +86,9 @@
 
     </dependencies>
 
-    <profiles>
-
-        <profile>
-            <id>postgresql</id>
-            <properties>
-                <hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</hibernate.dialect>
-                <jdbc.groupId>postgresql</jdbc.groupId>
-                <jdbc.artifactId>postgresql</jdbc.artifactId>
-                <jdbc.version>8.1-407.jdbc3</jdbc.version>
-                <jdbc.driverClassName>org.postgresql.Driver</jdbc.driverClassName>
-                <jdbc.url><![CDATA[jdbc:postgresql://localhost/webCrawler]]></jdbc.url>
-                <jdbc.username>postgres</jdbc.username>
-                <jdbc.password>postgres</jdbc.password>
-            </properties>
-        </profile>
-    </profiles>
-
     <properties>
-        <!-- Application settings -->
-        <dao.framework>hibernate</dao.framework>
-        <amp.genericCore>true</amp.genericCore>
-        <amp.fullSource>false</amp.fullSource>
-
         <!-- Framework dependency versions -->
-        <appfuse.version>2.0-SNAPSHOT</appfuse.version>
-        <spring.version>2.0.6</spring.version>
+        <spring.version>2.0.8</spring.version>
 
         <!-- Testing dependency versions -->
         <jmock.version>1.1.0</jmock.version>

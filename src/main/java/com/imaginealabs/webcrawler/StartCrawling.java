@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -63,14 +64,22 @@ public  static void main(String[] args)
     {
         Resource resource = new ClassPathResource("/webcrawler.properties");
         Properties props = PropertiesLoaderUtils.loadProperties(resource);
-        final   String baseFolder=props.getProperty("base.download.location");
+        final       String baseFolder;
         final   String BASE_URI=props.getProperty("remote.uri");
         final   Integer timeOut=Integer.parseInt(props.getProperty("remote.connection.timeout"));
 
+        String baseLocation=props.getProperty("base.download.location");
+        if(StringUtils.isEmpty(baseLocation))
+        {
+            baseFolder="/tmp";
+        }
+        else
+        {
+            baseFolder=baseLocation;
+        }
         Instant startTime=Instant.now();
-         conn=Jsoup.connect("http://mail-archives.apache.org/mod_mbox/maven-users/").timeout(timeOut);
+         conn=Jsoup.connect(BASE_URI).timeout(timeOut);
        List<Element> elements= conn.get().select("a[href]");
-      //  String data= Jsoup.connect("http://mail-archives.apache.org/mod_mbox/maven-users/").timeout(10 * 1000).get().data();
         elements.stream().filter(n -> n.attributes().get("href").endsWith("thread")).collect(Collectors.toList()).stream().
                 forEach(n -> new Thread(new CrawlerThread(BASE_URI, baseFolder, n.attributes().get("href"),conn)).start());
   /*      StartCrawling sc =new StartCrawling();
